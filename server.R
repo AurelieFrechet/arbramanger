@@ -49,5 +49,53 @@ function(input, output, session){
   })
 
 
+# Arbres réactifs aux inputs ----------------------------------------------
+
+  df_arbres <- reactive({
+    df <- data_arbres
+    if(input$nom_arbre != "Tous"){
+      df <- df %>%  dplyr::filter(nom_commun == input$nom_arbre)
+
+      if(input$genre_arbre != "Tous") {
+        df <- df %>%  dplyr::filter(genre == input$genre_arbre)
+
+        if(input$espece_arbre != "Tous") {
+          df <- df %>%  dplyr::filter(espece == input$espece_arbre)
+        }
+
+        if(input$variete_arbre != "Tous") {
+          df <- df %>%  dplyr::filter(variete == input$variete_arbre)
+        }
+      }
+    }
+
+    df
+  })
+
+# Carte -------------------------------------------------------------------
+
+output$carte_arbre <- renderLeaflet({
+  leaflet(data = df_arbres()) %>%
+    addTiles() %>%
+    addCircleMarkers(
+      lng = ~ lng,
+      lat = ~ lat,
+      color = "green",
+      radius = 5,
+      stroke = FALSE,
+      opacity = 1,
+      fillOpacity = 1,
+      popup = ~ paste(
+        "Nom commun: ",
+        nom_commun,
+        "<br> Genre: ",
+        genre,
+        "<br> Espèce: ",
+        espece,
+        "<br> Variété: ",
+        variete
+      )
+    )
+})
 
 }

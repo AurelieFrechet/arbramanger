@@ -7,7 +7,8 @@ library(shinydashboard)
 
 # Chargement des donnees --------------------------------------------------
 
-data_arbres <- readRDS("data/arbres_identifies.RDS")
+data_arbres <- readRDS("data/arbres_identifies.RDS") %>%
+  dplyr::filter(nom_commun != "")
 
 noms_arbres     <- sort(unique(data_arbres$nom_commun))
 genre_arbres    <- sort(unique(data_arbres$genre))

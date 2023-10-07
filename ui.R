@@ -57,7 +57,7 @@ dashboardPage(
     ),
     # Carte & infos
     fluidRow(column(width = 8,
-                    p("carte")),
+                    leafletOutput("carte_arbre")),
              column(
                width = 4,
                box(
