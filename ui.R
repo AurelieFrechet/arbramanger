@@ -1,71 +1,44 @@
-dashboardPage(
-  skin = "black",
+page_navbar(
   title = "Arbres à manger",
-  dashboardHeader(disable = TRUE),
-  dashboardSidebar(disable = TRUE),
-  dashboardBody(
+  fillable = TRUE,
+  bg = "#005B41",
+  theme =bs_theme(
+    bg = "#FEFEFE",
+    fg = "#005B41",
+    primary = "#005B41",
+    secondary = "#232D3F",
+    success = "#008170",
+    base_font = font_google("Inter"),
+    code_font = font_google("JetBrains Mono")
+  ),
+  includeCSS("www/css/style.css"), # App style
+
+  nav_panel(
     # Titre
-    h2("Arbres à manger"),
-    # Inputs
-    fluidRow(
-      column(
-        width = 3,
-
-        selectInput(
-          inputId = "nom_arbre",
-          label   = "Nom arbre",
-          choices = c("Tous", as.character(noms_arbres))
-        )
-      ),
-      column(
-        width = 3,
-
-        conditionalPanel(
-          condition = "input.nom_arbre != 'Tous'",
-          selectInput(
-            inputId = "genre_arbre",
-            label   = "Genre",
-            choices = "Tous",
-            selected = "Tous"
-          )
-        )
-      ),
-      column(
-        width = 3,
-        conditionalPanel(
-          condition = "input.nom_arbre != 'Tous' && input.genre_arbre != 'Tous'",
-          selectInput(
-            inputId = "espece_arbre",
-            label   = "Espèce",
-            choices = "Tous",
-            selected = "Tous"
-          )
-        )
-      ),
-      column(
-        width = 3,
-        conditionalPanel(
-          condition = "input.nom_arbre != 'Tous' && input.genre_arbre != 'Tous' && input.espece_arbre != 'Tous'",
-          selectInput(
-            inputId = "variete_arbre",
-            label   = "Variété",
-            choices = "Tous",
-            selected = "Tous"
-          )
+    "Carte",
+    # Inputs in R/select_tree.R
+    select_tree,
+    # Carte & infos
+    layout_columns(
+      id = "carte_container",
+      col_widths  = c(8, 4),
+      leafletOutput("carte_arbre",
+                    width = "100%",
+                    height = "100%"),
+      card(
+        class = "bg-primary",
+        card_header(
+          class = "bg-dark",
+          "A header"
+        ),
+        card_body(
+          markdown("Some text with a [link](https://github.com)")
         )
       )
-    ),
-    # Carte & infos
-    fluidRow(column(width = 8,
-                    leafletOutput("carte_arbre")),
-             column(
-               width = 4,
-               box(
-                 title = "Arbre",
-                 width = NULL,
-                 solidHeader = TRUE,
-                 background = "green"
-               )
-             ))
-  )
+
+    )
+  ),
+  nav_panel("Infos"),
+  footer = "Made with love"
+
 )

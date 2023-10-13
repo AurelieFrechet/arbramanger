@@ -76,11 +76,11 @@ function(input, output, session){
 
 output$carte_arbre <- renderLeaflet({
   leaflet(data = df_arbres()) %>%
-    addTiles() %>%
+    addProviderTiles(providers$CartoDB.Positron) %>%
     addCircleMarkers(
       lng = ~ lng,
       lat = ~ lat,
-      color = "green",
+      color = "#005B41",
       radius = 5,
       stroke = FALSE,
       opacity = 1,
