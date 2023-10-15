@@ -53,18 +53,18 @@ function(input, output, session){
 
   df_arbres <- reactive({
     df <- data_arbres
-    if(input$nom_arbre != "Tous"){
-      df <- df %>%  dplyr::filter(nom_commun == input$nom_arbre)
+    if(input$nom_arbre[1] != "Tous"){
+      df <- df %>%  dplyr::filter(nom_commun %in% input$nom_arbre)
 
-      if(input$genre_arbre != "Tous") {
-        df <- df %>%  dplyr::filter(genre == input$genre_arbre)
+      if(input$genre_arbre[1] != "Tous") {
+        df <- df %>%  dplyr::filter(genre %in% input$genre_arbre)
 
-        if(input$espece_arbre != "Tous") {
-          df <- df %>%  dplyr::filter(espece == input$espece_arbre)
+        if(input$espece_arbre[1] != "Tous") {
+          df <- df %>%  dplyr::filter(espece %in% input$espece_arbre)
         }
 
         if(input$variete_arbre != "Tous") {
-          df <- df %>%  dplyr::filter(variete == input$variete_arbre)
+          df <- df %>%  dplyr::filter(variete %in% input$variete_arbre)
         }
       }
     }

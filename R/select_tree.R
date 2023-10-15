@@ -3,7 +3,9 @@ select_tree <- layout_columns(
   selectInput(
     inputId = "nom_arbre",
     label   = "Nom arbre",
-    choices = c("Tous", as.character(noms_arbres))
+    choices = c("Tous", as.character(noms_arbres)),
+    selected = "Tous",
+    multiple = TRUE
   ),
 
   conditionalPanel(
@@ -12,7 +14,8 @@ select_tree <- layout_columns(
       inputId = "genre_arbre",
       label   = "Genre",
       choices = "Tous",
-      selected = "Tous"
+      selected = "Tous",
+      multiple = TRUE
     )
   ),
 
@@ -22,7 +25,8 @@ select_tree <- layout_columns(
       inputId = "espece_arbre",
       label   = "Espèce",
       choices = "Tous",
-      selected = "Tous"
+      selected = "Tous",
+      multiple = TRUE
     )
   ),
 
@@ -32,7 +36,8 @@ select_tree <- layout_columns(
       inputId = "variete_arbre",
       label   = "Variété",
       choices = "Tous",
-      selected = "Tous"
+      selected = "Tous",
+      multiple = TRUE
     )
   )
 )
