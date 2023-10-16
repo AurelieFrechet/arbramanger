@@ -7,7 +7,7 @@ library(bslib)
 
 # Chargement des donnees --------------------------------------------------
 
-data_arbres <- readRDS("data/arbres_identifies.RDS") %>%
+data_arbres <- readRDS("data/arbres_identifies_simplifies.RDS") %>%
   dplyr::filter(nom_commun != "")
 
 noms_arbres     <- sort(unique(data_arbres$nom_commun))
