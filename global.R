@@ -1,14 +1,14 @@
 library(dplyr)
 library(leaflet)
-
+library(markdown)
 library(bslib)
 
 
 
 # Chargement des donnees --------------------------------------------------
 
-data_arbres <- readRDS("data/arbres_identifies_simplifies.RDS") %>%
-  dplyr::filter(nom_commun != "")
+data_arbres <- readRDS("data/arbres_rennes_metropole.RDS") %>%
+  dplyr::filter(identifie == "Identifiés")
 
 noms_arbres     <- sort(unique(data_arbres$nom_commun))
 genre_arbres    <- sort(unique(data_arbres$genre))

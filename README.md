@@ -1,1 +1,41 @@
-# arbramanger
+
+## Présentation de l'appli
+
+Bienvenue sur Arbramanger, une application qui vous permet de localiser les arbres de Rennes en fonction de leur espèce. Et ainsi comme moi, rechercher les chataîgners pour cet automne.
+
+## Source des données
+
+### Open Data
+
+Les données proviennes de l'Open Data Rennais : 
+
+- [Les arbres d'ornement](https://data.rennesmetropole.fr/explore/dataset/arbres-dornement-rennes/information/)
+- [les arbres d'alignement](https://data.rennesmetropole.fr/explore/dataset/arbres-d-alignement-rennes/information/)
+- [les arbres Rennes métropole](https://data.rennesmetropole.fr/explore/dataset/arbre_hors_rennes/information/)
+
+Seulement cinq variables sont nécessaire pour faire tourner cette application. La localisation(latitude et longitude), le nom taxon de l'arbre (genre, espèce, variété).
+Ainsi, l'application est pérenne et compatible avec n'importe quel autre jeu de données présentant les mêmes caractéristiques.
+
+### Manipulations
+
+Une jointure est faite entre les noms taxons et les noms vernaculaires (nom commun ou d'usage) des arbres afin de simplifier la recherche.
+
+Seuls les arbres identifiés (valeur nom vide pour le nom vernaculaire) sont conservé.
+
+Table: Arbres identifiés par jeu de données
+
+|                    |Identifiés | Non identifiés|   Total|
+|:-------------------|:----------|--------------:|-------:|
+|Arbres d'alignement |24 771     |             41|  24 812|
+|Arbres d'ornement   |16 280     |         55 669|  71 949|
+|Arbres hors Rennes  |16 473     |         74 198|  90 671|
+|Total               |57 524     |        129 908| 187 432|
+
+Du fait du grand nombre d'arbres à afficher sur la carte, celle-ci peut mettre quelques secondes avant de s'afficher. 
+
+
+## Futur de l'application
+
+Je souhaite combiner ces données avec des informations concernant les arbres, telles que la comestibilité de leurs feuilles ou fruits, la saison à laquelle ils sont disponibles, et les méthodes pour les identifier.
+
+

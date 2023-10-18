@@ -1,5 +1,6 @@
-#carte_container{
+#carte_arbre{
   flex: 1 1 auto;
   z-index: 950;
+  min-height: 500px;
 }
 

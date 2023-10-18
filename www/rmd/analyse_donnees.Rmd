@@ -1,0 +1,92 @@
+---
+title: "Aperçu données"
+author: "Aurélie Fréchet"
+date: '2023-10-03'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(leaflet)
+library(dplyr)
+library(leaflet)
+options(digits = 14)
+
+data_arbres <- read.csv2("data/arbres-dornement-rennes.csv")
+
+colnames(data_arbres)[1:2] <- c("geo_point", "geo_shape")
+
+data_arbres <- data_arbres %>%
+  mutate(
+    genre = as.factor(genre),
+    espece = as.factor(espece),
+    variete = as.factor(variete),
+    gestion = as.factor(gestion),
+    nom_commun = as.factor(nom_commun),
+    date_plant = ifelse(date_plant == 0, NA, date_plant),
+    circonference = ifelse(date_plant == 0, NA, circonference),
+    hauteur = ifelse(date_plant == 0, NA, hauteur)
+  )
+
+divide_geopoint <- data_arbres$geo_point %>% strsplit(',')
+data_arbres$lat = sapply(divide_geopoint, '[', 1) %>% as.numeric()
+data_arbres$lng = sapply(divide_geopoint, '[', 2) %>% as.numeric()
+```
+
+## Origine des données
+
+Ensemble du patrimoine arboré d'ornement au sein d'espaces verts (parcs, squares, jardins de proximité, etc.) ou équipements (complexes sportifs, écoles, cimetières, etc.) sur le territoire rennais, géré par la Direction des Jardins.
+
+les données sont disponibles sur le site de l'Open Data de la ville de Rennes : https://data.rennesmetropole.fr/explore/dataset/arbres-dornement-rennes/information/?location=17,48.12602,-1.6388&basemap=0a029a
+
+
+
+## Varietés d'arbres
+
+### Par noms communs
+
+```{r repartition, echo=FALSE, message=FALSE}
+varietes <- data_arbres %>% 
+  group_by(nom_commun, genre, espece, variete) %>% 
+  summarise(nb = n()) %>% 
+  arrange(nom_commun) 
+
+write.csv(varietes, "data/varietes_arbres.csv")
+
+varietes
+```
+
+### Où sont localisé les arbres identifiés ?
+
+```{r na_nom, echo=FALSE}
+data_arbres <- data_arbres %>%
+  dplyr::filter(nom_commun != "")
+
+pal <- colorNumeric(
+  palette = "Greens",
+  domain = data_arbres$categorie)
+
+
+carte_arbre <- leaflet(data = data_arbres) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lng = ~ lng,
+    lat = ~ lat,
+    color = "green",
+    radius = 5,
+    stroke = FALSE,
+    opacity = 1,
+    fillOpacity = 1,
+    popup = ~ paste(
+      "Nom commun: ", nom_commun,
+      "<br> Genre: ", genre,
+      "<br> Espèce: ", espece,
+      "<br> Variété: ", variete
+    )
+  )
+
+carte_arbre
+```
+
