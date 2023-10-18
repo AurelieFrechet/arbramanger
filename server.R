@@ -1,5 +1,5 @@
 function(input, output, session){
-
+  # bs_themer()
 
 # Changement dans la selection du type d'arbre ----------------------------
 

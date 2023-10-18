@@ -5,7 +5,7 @@ page_navbar(
   bg = "#005B41",
   theme = bs_theme(
     bg = "#FEFEFE",
-    fg = "#005B41",
+    fg = "#0F0F0F",
     primary = "#005B41",
     secondary = "#232D3F",
     success = "#008170",
