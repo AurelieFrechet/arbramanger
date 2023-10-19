@@ -94,8 +94,54 @@ output$carte_arbre <- renderLeaflet({
         espece,
         "<br> Variété: ",
         variete
-      )
+      ),
+      layerId = ~gml_id
     )
+})
+
+
+# Infos sur l'arbre -------------------------------------------------------
+selected_arbre <- reactive({
+  if (!is.null(input$carte_arbre_marker_click)) {
+    res <- df_arbres() %>%
+      dplyr::filter(gml_id == input$carte_arbre_marker_click$id)
+
+    if (nrow(res) == 0) {
+      return(NULL)
+    } else {
+      return(res)
+    }
+  } else {
+    return(NULL)
+  }
+
+})
+
+output$info_header <- renderText({
+  if (is.null(selected_arbre())) {
+    "Infos"
+  } else {
+    as.character(selected_arbre()$nom_commun)
+  }
+})
+
+
+output$infos <- renderUI({
+  if (is.null(selected_arbre())) {
+    p("Cliquez sur un arbre pour avoir ses informations")
+  } else {
+    div(layout_column_wrap(width = 1 / 2,
+                           HTML(
+                             paste0("<p><i>", selected_arbre()$nom_taxon, "</i></p>")
+                           ),
+                           HTML(
+                             paste0(
+                               "<p><i>Age de l'arbre : ",
+                               lubridate::year(Sys.Date()) - selected_arbre()$date_plant,
+                               "</i></p>"
+                             )
+                           )))
+  }
 })
 
 }

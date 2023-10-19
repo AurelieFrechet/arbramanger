@@ -43,14 +43,11 @@ page_navbar(
 
 # Description -------------------------------------------------------------
 
-      card(
-        class = "bg-primary",
-        card_header(class = "bg-dark",
-                    "A header"),
-        card_body(markdown(
-          "Some text with a [link](https://github.com)"
-        ))
-      )
+card(class = "bg-primary",
+     card_header(textOutput("info_header")),
+     card_body(
+       uiOutput("infos")
+     ))
 
     )
   ),
