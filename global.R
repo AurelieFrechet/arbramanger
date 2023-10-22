@@ -7,8 +7,9 @@ library(bslib)
 
 # Chargement des donnees --------------------------------------------------
 
-data_arbres <- readRDS("data/arbres_rennes_metropole.RDS") %>%
-  dplyr::filter(identifie == "Identifiés")
+data_arbres <- readRDS("data/arbres_identifies_simplifies.RDS") %>%
+  dplyr::filter(identifie == "Identifiés") %>%
+  mutate(nom_commun = nom_vernaculaire)
 
 noms_arbres     <- sort(unique(data_arbres$nom_commun))
 genre_arbres    <- sort(unique(data_arbres$genre))

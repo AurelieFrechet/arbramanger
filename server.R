@@ -74,30 +74,35 @@ function(input, output, session){
 
 # Carte -------------------------------------------------------------------
 
-output$carte_arbre <- renderLeaflet({
-  leaflet(data = df_arbres()) %>%
-    addProviderTiles(providers$CartoDB.Positron) %>%
-    addCircleMarkers(
-      lng = ~ lng,
-      lat = ~ lat,
-      color = "#005B41",
-      radius = 5,
-      stroke = FALSE,
-      opacity = 1,
-      fillOpacity = 1,
-      popup = ~ paste(
-        "Nom commun: ",
-        nom_commun,
-        "<br> Genre: ",
-        genre,
-        "<br> Espèce: ",
-        espece,
-        "<br> Variété: ",
-        variete
-      ),
-      layerId = ~gml_id
-    )
-})
+  output$carte_arbre <- renderLeaflet({
+    leaflet(data = df_arbres(),
+            options = leafletOptions(preferCanvas = TRUE)) %>%
+      addProviderTiles(
+        providers$CartoDB.Positron,
+        options = providerTileOptions(updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+                                      updateWhenIdle = TRUE  )         # map won't load new tiles when panning)
+        ) %>%
+          addCircleMarkers(
+            lng = ~ lng,
+            lat = ~ lat,
+            color = "#005B41",
+            radius = 5,
+            stroke = FALSE,
+            opacity = 1,
+            fillOpacity = 1,
+            popup = ~ paste(
+              "Nom commun: ",
+              nom_commun,
+              "<br> Genre: ",
+              genre,
+              "<br> Espèce: ",
+              espece,
+              "<br> Variété: ",
+              variete
+            ),
+            layerId = ~ gml_id
+          )
+        })
 
 
 # Infos sur l'arbre -------------------------------------------------------
