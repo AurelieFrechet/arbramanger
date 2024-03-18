@@ -105,7 +105,7 @@ function(input, output, session) {
       setView(lng = -1.6777926, lat = 48.117266, zoom = 12)
   })
 
-  observeEvent(df_arbres(), {
+  observe({
     leafletProxy("carte_arbre", session) %>%
       clearMarkers() %>%
       addCircleMarkers(
@@ -113,7 +113,7 @@ function(input, output, session) {
         lng = ~ lng,
         lat = ~ lat,
         color = "#005B41",
-        radius = 5,
+        radius = 3,
         stroke = FALSE,
         opacity = 1,
         fillOpacity = 1,
