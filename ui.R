@@ -15,6 +15,10 @@ page_navbar(
   includeCSS("www/css/style.css"),
   # App style
 
+
+# Page Carte --------------------------------------------------------------
+
+
   nav_panel(
     # Titre
     "Carte",
@@ -27,34 +31,38 @@ page_navbar(
       height = "300px",
 
 
-# Carte -------------------------------------------------------------------
-      card(full_screen = TRUE,
-           # min_height = "300px",
-           card_body(
-             class = "p-0",
-             fillable = TRUE,
-             leafletOutput(
-               outputId = "carte_arbre",
-               width = "100%",
-               height = "100%"
-             )
-           )),
+      ## Carte -------------------------------------------------------------------
+      card(
+        full_screen = TRUE,
+        # min_height = "300px",
+        card_body(
+          class = "p-0",
+          fillable = TRUE,
+          leafletOutput(
+            outputId = "carte_arbre",
+            width = "100%",
+            height = "100%"
+          )
+        )
+      ),
 
 
-# Description -------------------------------------------------------------
+      ## Description -------------------------------------------------------------
 
-card(class = "bg-primary",
-     card_header(textOutput("info_header")),
-     card_body(
-       uiOutput("infos")
-     ))
+      card(class = "bg-primary",
+           card_header(textOutput("info_header")),
+           card_body(uiOutput("infos")))
 
     )
   ),
+
+
+# Page Infos --------------------------------------------------------------
+
+
   nav_panel("Infos",
             # includeHTML("www/rmd/sources.html")
-            includeMarkdown("www/rmd/sources.Rmd")
-            ),
+            includeMarkdown("www/rmd/sources.Rmd")),
   footer = "Made with love"
 
 )
