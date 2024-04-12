@@ -15,6 +15,19 @@ nom_latin <- function(genre,
   )
 }
 
+#' Planté en
+#'
+#' @description
+#' Texte à afficher en fonction de la date de plantation
+#'
+plante_le <- function(date_plant){
+  if(is.na(date_plant)){
+    return("Pas de renseignement sur la date de plantation")
+  } else {
+    return(paste("Planté en", date_plant))
+  }
+}
+
 
 #' Description Pop Up
 #'@description Prépare le texte HTML pour le popup sur la carte
@@ -83,43 +96,3 @@ description_beaulieu <- function(id_svg, df_beaulieu) {
   return(paste(desc_arbres, collapse = " <br> "))
 }
 
-
-description_complete <- function(genre,
-                                 espece,
-                                 variete,
-                                 date_plant,
-                                 df_beaulieue) {
-  # Infos Open Data Rennes
-  # centré en titre en italique
-  nom_latin(genre, espece,  variete)
-  # retour à la ligne
-  ## Si date non renseignée
-  # aligné à gauche
-  "Planté le date"
-  "Pas de renseignement sur la date de plantation"
-
-  # trait de sépération
-  # Info Beaulieue
-  "Pas d'informations complémentaires pour cet arbre,
-  disponibles pour liste d'arbres"
-
-  ## Croquis
-
-  ## Description
-
-  croquis_path <-
-    paste0("www/arboretum_sources/",
-           selected_arbre()$id_svg,
-           ".svg")
-  croquis <- paste(readLines(croquis_path, warn = FALSE),
-                   collapse = " ") %>%
-    stringr::str_replace_all(pattern     = "#000000",
-                             replacement = "#FFF")
-
-
-  # if (!is.na(date_plant)) {
-  #   description <- glue::glue("{description}
-  #     <br>
-  #     Planté en {date_plant}")
-  # }
-}

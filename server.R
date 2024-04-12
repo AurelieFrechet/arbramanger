@@ -91,7 +91,7 @@ function(input, output, session) {
   observe({
     update
 
-    })
+  })
 
   # Carte -------------------------------------------------------------------
 
@@ -102,7 +102,9 @@ function(input, output, session) {
         options = providerTileOptions(updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
                                       updateWhenIdle = TRUE)         # map won't load new tiles when panning)
       )  %>%
-      setView(lng = -1.6777926, lat = 48.117266, zoom = 12)
+      setView(lng = -1.6777926,
+              lat = 48.117266,
+              zoom = 12)
   })
 
   observe({
@@ -117,16 +119,10 @@ function(input, output, session) {
         stroke = FALSE,
         opacity = 1,
         fillOpacity = 1,
-        popup = ~ paste(
-          "Nom commun: ",
-          nom_commun,
-          "<br> Genre: ",
-          genre,
-          "<br> Espèce: ",
-          espece,
-          "<br> Variété: ",
-          variete
-        ),
+        popup = ~ description_popup(nom_commun,
+                                  genre,
+                                  espece,
+                                  variete),
         layerId = ~ gml_id
       )
   })
@@ -163,40 +159,42 @@ function(input, output, session) {
 
 
   output$infos <- renderUI({
+    # Si pas d'arbre sélectionné
     if (is.null(selected_arbre())) {
-      p("Cliquez sur un arbre pour avoir ses informations")
-    } else {
-      infos <- div(layout_column_wrap(width = 1 / 2,
-                                      HTML(
-                                        paste0("<p><i>", selected_arbre()$nom_taxon, "</i></p>")
-                                      ),
-                                      HTML(
-                                        paste0(
-                                          "<p><i>Date plantation : ",
-                                          selected_arbre()$date_plant,
-                                          "</i></p>"
-                                        )
-                                      )))
-
-
-      ## Enrichissement Arboreturm --------------------------------------------
-
-      if (!is.na(selected_arbre()$id_svg)) {
-        croquis_path <-
-          paste0("www/arboretum_sources/",
-                 selected_arbre()$id_svg,
-                 ".svg")
-        croquis <- paste(readLines(croquis_path, warn = FALSE),
-                         collapse = " ") %>%
-          stringr::str_replace_all(pattern     = "#000000",
-                                   replacement = "#FFF")
-
-        infos <- tagList(infos,
-                         div(HTML(croquis)))
-      }
-
-      infos
+      return(p("Cliquez sur un arbre pour avoir ses informations"))
     }
+
+    infos <- div(layout_column_wrap(width = 1 / 2,
+                                    HTML(
+                                      paste0("<p><i>", selected_arbre()$nom_taxon, "</i></p>")
+                                    ),
+                                    HTML(
+                                      paste0(
+                                        "<p><i>Date plantation : ",
+                                        selected_arbre()$date_plant,
+                                        "</i></p>"
+                                      )
+                                    )))
+
+
+    ## Enrichissement Arboreturm --------------------------------------------
+
+    if (!is.na(selected_arbre()$id_svg)) {
+      croquis_path <-
+        paste0("www/arboretum_sources/",
+               selected_arbre()$id_svg,
+               ".svg")
+      croquis <- paste(readLines(croquis_path, warn = FALSE),
+                       collapse = " ") %>%
+        stringr::str_replace_all(pattern     = "#000000",
+                                 replacement = "#FFF")
+
+      infos <- tagList(infos,
+                       div(HTML(croquis)))
+    }
+
+    infos
+
   })
 
 
