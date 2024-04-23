@@ -17,6 +17,7 @@ especes_arbres  <- sort(unique(data_arbres$espece))
 varietes_arbres <- sort(unique(data_arbres$variete))
 
 
+data_beaulieue <- readxl::read_excel("data/arboretum/donnees_arboretum.xlsx")
 
 get_genres <- function(nom_arbre) {
   unique(data_arbres$genre[data_arbres$nom_commun == nom_arbre]) %>%

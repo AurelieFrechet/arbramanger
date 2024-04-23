@@ -88,10 +88,7 @@ function(input, output, session) {
     df
   })
 
-  observe({
-    update
 
-  })
 
   # Carte -------------------------------------------------------------------
 
@@ -120,9 +117,9 @@ function(input, output, session) {
         opacity = 1,
         fillOpacity = 1,
         popup = ~ description_popup(nom_commun,
-                                  genre,
-                                  espece,
-                                  variete),
+                                    genre,
+                                    espece,
+                                    variete),
         layerId = ~ gml_id
       )
   })
@@ -153,7 +150,13 @@ function(input, output, session) {
     if (is.null(selected_arbre())) {
       "Infos"
     } else {
-      as.character(selected_arbre()$nom_commun)
+      HTML(paste(as.character(selected_arbre()$nom_commun),
+            " - ",
+            (nom_latin(
+              selected_arbre()$genre,
+              selected_arbre()$espece,
+              selected_arbre()$variete
+            ))))
     }
   })
 
@@ -164,36 +167,37 @@ function(input, output, session) {
       return(p("Cliquez sur un arbre pour avoir ses informations"))
     }
 
-    infos <- div(layout_column_wrap(width = 1 / 2,
-                                    HTML(
-                                      paste0("<p><i>", selected_arbre()$nom_taxon, "</i></p>")
-                                    ),
-                                    HTML(
-                                      paste0(
-                                        "<p><i>Date plantation : ",
-                                        selected_arbre()$date_plant,
-                                        "</i></p>"
-                                      )
-                                    )))
+    infos_opendata <- div(HTML(
+      nom_latin(
+        selected_arbre()$genre,
+        selected_arbre()$espece,
+        selected_arbre()$variete
+      ),
+      "<br>",
+      plante_le(selected_arbre()$date_plant)
+    ))
 
 
     ## Enrichissement Arboreturm --------------------------------------------
 
-    if (!is.na(selected_arbre()$id_svg)) {
-      croquis_path <-
-        paste0("www/arboretum_sources/",
-               selected_arbre()$id_svg,
-               ".svg")
-      croquis <- paste(readLines(croquis_path, warn = FALSE),
-                       collapse = " ") %>%
-        stringr::str_replace_all(pattern     = "#000000",
-                                 replacement = "#FFF")
 
-      infos <- tagList(infos,
-                       div(HTML(croquis)))
+    if (!is.na(selected_arbre()$id_svg)) {
+      infos <- fluidRow(
+          column(width = 5,
+                 HTML(croquis(id_svg = selected_arbre()$id_svg))
+          ),
+          column(width = 7,
+                 HTML(description_beaulieu(id_svg = selected_arbre()$id_svg,
+                                           df_beaulieu = data_beaulieue))
+          )
+        )
     }
 
-    infos
+    tagList(
+      infos_opendata,
+      br(),
+      infos
+    )
 
   })
 

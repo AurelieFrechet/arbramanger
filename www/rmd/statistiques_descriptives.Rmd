@@ -1,0 +1,185 @@
+---
+title: "Statistiques descriptives"
+author: "Aurélie Fréchet"
+date: "2023-11-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+options(digits = 4)
+data_arbres <- readRDS("../../data/arbres_rennes_identifies.RDS")
+```
+
+
+# Données réelles
+
+## Préparation des données
+
+En amont de l'étude, le choix est fait de ne conserver uniquement les arbres dont la fréquence du genre est supérieure à 30 individus dans la base de données et dont la hauteur, la circonférence et l'âge sont renseignés. Ainsi nous obtenons un échantillon de 10225 arbres pour une variété de 35 genres.
+
+```{r preparation, include=FALSE}
+# Creation de la variable age
+data_arbres$age <- lubridate::year(Sys.Date()) - data_arbres$date_plant
+
+# Retire les données manquantes
+data_arbres2 <- data_arbres[, c("genre", "hauteur", "circonference", "age")]
+nrow(data_arbres2)
+data_arbres2 <- na.omit(data_arbres2)
+nrow(data_arbres2)
+
+# Concerve les arbres ayant plus de 30 individus
+
+freq_arbres <- sort(table(data_arbres2$genre), decreasing = T)
+freq_arbres
+freq_arbres30 <- names(freq_arbres)[freq_arbres >= 30]
+length(freq_arbres30)
+
+```
+
+
+## Statistiques univariées
+
+### Taille
+
+```{r taille_reelle}
+summary(data_arbres$hauteur)
+ggplot(data_arbres, aes(hauteur)) +     # Histogram with logarithmic axis
+  geom_histogram(bins = 50) 
+
+```
+
+### Circonférence
+
+```{r circonference_reel}
+summary(data_arbres$circonference)
+ggplot(data_arbres, aes(circonference)) +     
+  geom_histogram(bins = 50) 
+```
+
+### Age
+
+L'âge de l'arbre est déterminé par rapport à la date de plantation, il ne s'agit donc pas d'un age exact.
+
+```{r age_reel}
+ggplot(data_arbres, aes(age)) +     
+  geom_histogram(bins = 50) 
+```
+
+### Genre
+
+```{r}
+ggplot(data_arbres, aes(genre)) +
+      geom_bar()
+```
+
+
+
+## Relations entre les variables
+
+### Corrélation entre les variables numériques
+
+```{r correlation}
+data_num <- data_arbres[, c("hauteur", "circonference", "age")]
+nrow(data_num)
+data_num <- na.omit(data_num)
+nrow(data_num)
+cor(data_num) %>% round(4) 
+
+```
+Sur les 10 000 arbres dont les informations sur l'âge, la circonférence et la hauteur sont renseignés, seuls la circonférence et la hauteur ont une corrélation linéaire.
+
+```{r age_circonference}
+
+ggplot(data_arbres, aes(x = age, y = circonference)) +     
+  geom_point() 
+```
+
+#### Taille : un problème d'échelle ?
+
+Testons à nouveau la corrélation avec une transformation logarithmique de la taille
+
+```{r correlation}
+data_num$taille_log <- log(data_num$hauteur, base = 10)
+cor(data_num) %>% round(4) 
+```
+
+La corrélation est plus forte mais n'est toujours pas suffisante pour l'intégrer dans un modèle.
+
+
+```{r age_taille}
+
+ggplot(data_arbres, aes(x = age, y = hauteur)) +     
+  geom_point() +
+  scale_y_log10()
+```
+### Croisement avec genre de l'arbre
+
+
+```{r boxplot_genre, fig.width=10,fig.height=16}
+genre_age <- ggplot(data_arbres2, aes(genre, age)) +
+      geom_violin() + 
+  coord_flip()
+
+genre_taille <- ggplot(data_arbres2, aes(genre, hauteur)) +
+      geom_violin() + 
+  coord_flip()
+
+genre_circ <- ggplot(data_arbres2, aes(genre, circonference)) +
+      geom_violin() + 
+  coord_flip()
+
+genre_age
+genre_taille
+genre_circ
+```
+
+Il apparaît visuellement un impact du genre de l'arbre sur les trois variables numériques. 
+
+### ANOVA
+
+#### Prérequis avant d'utiliser le modèle
+
+1. Les données sont indépendantes et identiquement distribuées  : 
+Difficile à évaluer, certains arbres de la même espèce peuvent avoir été plantés au même moment. Information non vériable, supposée vraie pour l'étude
+
+2. La distribution de la variable d'analyse est normale pour chaque facteur de la variable explicative : La raison pour laquelle nous n'avons conservé que les genres d'arbres pour lesquels il y avait plus de 30 individus, afin d'appliquer le théorème central limite.
+
+```{r test_normalite}
+data_arbres2 %>% 
+  group_by(genre) %>% 
+summarize(normal_t = shapiro.test(hauteur)$p.value > 0.05,
+          normal_c = shapiro.test(circonference)$p.value > 0.05,
+          normal_a = shapiro.test(age)$p.value > 0.05)
+
+```
+
+L'hypothèse de normalité et rejetée pour chacun des genres des arbres sur nos trois variables quantitatives.
+
+3. La variance est identique pour chacun des facteurs de la variable explicative :
+```{r test_variance}
+
+bartlett.test(hauteur ~ genre, data = data_arbres2)
+bartlett.test(circonference ~ genre, data = data_arbres2)
+bartlett.test(age ~ genre, data = data_arbres2)
+```
+
+Les p-values des tests de Barlett indique que l'on rejette l'hypothèse de l'homogéité des variances.
+
+
+
+
+
+
+```{r anova}
+
+aov <- oneway.test(hauteur ~ genre, data = data_arbres2)
+aov
+
+lm(age ~ hauteur + circonference + hauteur:circonference, data = data_arbres2)
+```
+
+
+
+
