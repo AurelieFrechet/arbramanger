@@ -150,13 +150,7 @@ function(input, output, session) {
     if (is.null(selected_arbre())) {
       "Infos"
     } else {
-      HTML(paste(as.character(selected_arbre()$nom_commun),
-            " - ",
-            (nom_latin(
-              selected_arbre()$genre,
-              selected_arbre()$espece,
-              selected_arbre()$variete
-            ))))
+      as.character(selected_arbre()$nom_commun)
     }
   })
 
@@ -167,7 +161,7 @@ function(input, output, session) {
       return(p("Cliquez sur un arbre pour avoir ses informations"))
     }
 
-    infos_opendata <- div(HTML(
+    infos <- div(HTML(
       nom_latin(
         selected_arbre()$genre,
         selected_arbre()$espece,
@@ -180,24 +174,22 @@ function(input, output, session) {
 
     ## Enrichissement Arboreturm --------------------------------------------
 
-
-    if (!is.na(selected_arbre()$id_svg)) {
-      infos <- fluidRow(
-          column(width = 5,
-                 HTML(croquis(id_svg = selected_arbre()$id_svg))
-          ),
-          column(width = 7,
-                 HTML(description_beaulieu(id_svg = selected_arbre()$id_svg,
-                                           df_beaulieu = data_beaulieue))
-          )
-        )
+  if (!is.na(selected_arbre()$id_svg)) {
+      infos <- tagList(
+        infos,
+         br(),
+         fluidRow(column(width = 5,
+                         HTML(
+                           croquis(id_svg = selected_arbre()$id_svg)
+                         )),
+                  column(width = 7,
+                         HTML(
+                           description_beaulieu(id_svg = selected_arbre()$id_svg,
+                                                df_beaulieu = data_beaulieue)
+                         ))))
     }
 
-    tagList(
-      infos_opendata,
-      br(),
-      infos
-    )
+    infos
 
   })
 

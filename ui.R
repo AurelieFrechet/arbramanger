@@ -1,5 +1,5 @@
 page_navbar(
-  title = "Arbres à manger",
+  title = "Arbres en ville",
   fillable = TRUE,
 
   bg = "#005B41",
@@ -63,6 +63,12 @@ page_navbar(
   nav_panel("Infos",
             # includeHTML("www/rmd/sources.html")
             includeMarkdown("www/rmd/sources.Rmd")),
-  footer = "Made with love"
+  footer = fluidRow(class = "p-3 border border-top-0 rounded-bottom",
+                    span("Made with",
+                         a(href = "https://github.com/AurelieFrechet",
+                           icon("fa fa-solid fa-heart")
+                           )
+                         )
+  )
 
 )
