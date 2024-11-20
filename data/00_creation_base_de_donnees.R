@@ -93,18 +93,4 @@ str(arbres_identifies)
 # 127 386 obs
 saveRDS(arbres_identifies, "data/arbres_rennes_identifies.RDS")
 
-# Clés à corriger : ( données aggrégées)
-## Id = Genre_espece_variete
-## Genre
-## Espece
-## Variete
-## Nom commun
-
-noms_a_corriger <-
-  arbres_identifies %>%
-  group_by(nom_latin, genre, espece, variete, nom_commun, nom_simplifie = nom_commun) %>%
-  summarise(n = n())
-
-write.csv(noms_a_corriger, "data/Noms_arbres_a_corriger.csv")
-
 rm(list = ls())
